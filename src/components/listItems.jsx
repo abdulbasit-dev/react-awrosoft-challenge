@@ -17,7 +17,7 @@ export const mainListItems = (
   //   });
   // }, []);
   <div>
-    <Link to='stores'>
+    <Link to='/stores'>
       <ListItem button>
         <ListItemIcon>
           <ShoppingCartIcon />

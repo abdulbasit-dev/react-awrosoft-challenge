@@ -31,6 +31,9 @@ function Stores() {
 
   return (
     <Container>
+      <Button onClick={() => history.push(`/`)} variant='primary'>
+        Back
+      </Button>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label='simple table'>
           <TableHead>
