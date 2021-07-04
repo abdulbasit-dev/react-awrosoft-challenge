@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {db} from './firebase';
+import Dashboard from './components/Dashboard';
 
 function App() {
   // useEffect =>runs a piece of code base on specific condition
@@ -11,7 +12,7 @@ function App() {
 
   return (
     <div>
-      <h1>sac</h1>
+      <Dashboard />
     </div>
   );
 }
