@@ -37,7 +37,7 @@ function AddCategory() {
       }
     } else {
       setFile(null);
-      setError('Please select a file file (pdf, ppt, pptx)');
+      setError('Please select a file file (jpg, png)');
     }
   }
 
