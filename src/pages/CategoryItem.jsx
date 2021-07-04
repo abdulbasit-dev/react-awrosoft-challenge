@@ -19,24 +19,26 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useStyles} from '../styles';
 import {db} from '../firebase';
 
-function StoreItem() {
-  const {sid} = useParams();
-  const [store, setStore] = useState('');
-  const [categories, setCategories] = useState([]);
+function CategoryItem() {
+  const {sid, cid} = useParams();
+  const [category, setCategory] = useState('');
+  const [items, setItems] = useState([]);
   const history = useHistory();
 
-  // useEffect =>runs a piece of code base on specific condition
+  //get current category
   useEffect(() => {
     db.collection('stores')
       .doc(sid)
+      .collection('categories')
+      .doc(cid)
       .get()
       .then(doc => {
-        setStore({...doc.data(), id: sid});
+        setCategory({...doc.data(), id: sid});
       })
       .catch(error => {
         console.log('Error getting document:', error);
       });
-  }, [sid]);
+  }, [sid, cid]);
 
   useEffect(() => {
     let unsubscribe;
@@ -45,77 +47,83 @@ function StoreItem() {
         .collection('stores')
         .doc(sid)
         .collection('categories')
+        .doc(cid)
+        .collection('items')
         .orderBy('timestamp', 'desc')
         .onSnapshot(snapshot => {
-          setCategories(
-            snapshot.docs.map(doc => ({id: doc.id, category: doc.data()}))
-          );
+          setItems(snapshot.docs.map(doc => ({id: doc.id, item: doc.data()})));
         });
     }
     //cleanup part
     return () => {
       unsubscribe();
     };
-  }, [sid]);
+  }, [sid, cid]);
 
-  console.log(categories);
+  console.log(items);
 
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
     <div>
-      <Button onClick={() => history.push(`/stores`)} variant='primary'>
+      <Button onClick={() => history.push(`/stores/${sid}`)} variant='primary'>
         Back
       </Button>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8} lg={9}>
+        <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
-            <h2>Store Name: {store?.name}</h2>
-            <h3>Store Description: {store?.description}</h3>
-            <Link to={`/stores/${sid}/create-category`}>
+            <h2>Category Name: {category?.name}</h2>
+
+            <Link to={`/stores/${sid}/categories/${cid}/create-item`}>
               <Button
                 variant='contained'
                 color='primary'
                 className={classes.button}
               >
-                Add Category
+                Add Item To The Category
               </Button>
             </Link>
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4} lg={3}>
+        <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
-            <h3>No. of Categories 12</h3>
+            <img src={category.url} alt='' />
           </Paper>
         </Grid>
 
         <Grid item xs={12} md={12} lg={12}>
-          {categories.length ? (
+          {items.length ? (
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label='simple table'>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Cateogry Name</TableCell>
+                    <TableCell>Item Name</TableCell>
+                    <TableCell>Item Price</TableCell>
                     <TableCell>Image</TableCell>
-                    <TableCell>See Category</TableCell>
+                    <TableCell>See Item</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {categories?.map(category => (
-                    <TableRow key={category.id}>
+                  {items?.map(item => (
+                    <TableRow key={item.id}>
                       <TableCell component='th' scope='row'>
-                        {category.category.name}
+                        {item.item.name}
+                      </TableCell>
+                      <TableCell component='th' scope='row'>
+                        {item.item.price}
                       </TableCell>
                       <TableCell component='th' scope='row'>
                         <img
-                          src={category.category?.url}
+                          src={item.item?.url}
                           style={{width: '100px', height: '100px'}}
                           alt=''
                         />
                       </TableCell>
                       <TableCell>
-                        <Link to={`/stores/${sid}/categories/${category.id}`}>
+                        <Link
+                          to={`/stores/${sid}/categories/${cid}/item/${item.id}`}
+                        >
                           <IconButton>
                             <VisibilityIcon color='primary' fontSize='large' />
                           </IconButton>
@@ -127,7 +135,7 @@ function StoreItem() {
               </Table>
             </TableContainer>
           ) : (
-            <h1>No category found</h1>
+            <h1>No item found</h1>
           )}
         </Grid>
       </Grid>
@@ -135,4 +143,4 @@ function StoreItem() {
   );
 }
 
-export default StoreItem;
+export default CategoryItem;

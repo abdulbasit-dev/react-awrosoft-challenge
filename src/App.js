@@ -18,12 +18,15 @@ import {
 import {Menu as MenuIcon, Home as HomeIcon} from '@material-ui/icons';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import {mainListItems, secondaryListItems} from './components/listItems';
+import {mainListItems} from './components/listItems';
 
 import AddStore from './pages/AddStore';
+import AddItem from './pages/AddItem';
+import Item from './pages/Item';
 import Stores from './pages/Stores';
 import Home from './pages/Home';
 import StoreItem from './pages/StoreItem';
+import CategoryItem from './pages/CategoryItem';
 import {useStyles} from './styles';
 import AddCategory from './pages/AddCategory';
 
@@ -92,7 +95,6 @@ export default function App() {
           <Divider />
           <List>{mainListItems}</List>
           <Divider />
-          <List>{secondaryListItems}</List>
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
@@ -103,6 +105,15 @@ export default function App() {
               </Route>
               <Route path='/stores' exact>
                 <Stores />
+              </Route>
+              <Route path='/stores/:sid/categories/:cid' exact>
+                <CategoryItem />
+              </Route>
+              <Route path='/stores/:sid/categories/:cid/item/:itemId' exact>
+                <Item />
+              </Route>
+              <Route path='/stores/:sid/categories/:cid/create-item' exact>
+                <AddItem />
               </Route>
               <Route path='/stores/:sid' exact>
                 <StoreItem />

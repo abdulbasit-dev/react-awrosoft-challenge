@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory} from 'react-router-dom';
 import {
   IconButton,
   Table,
@@ -10,6 +10,7 @@ import {
   TableRow,
   Paper,
   Container,
+  Button,
 } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
@@ -19,6 +20,7 @@ import {db} from '../firebase';
 function Stores() {
   const classes = useStyles();
   const [stores, setStores] = useState([]);
+  const history = useHistory();
 
   // useEffect =>runs a piece of code base on specific condition
   useEffect(() => {
